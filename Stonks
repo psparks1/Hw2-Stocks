@@ -1,0 +1,72 @@
+Sub Stocks2()
+
+
+  'Sets our for loop variables
+    Dim i As Long
+    Dim x As Long
+
+  ' Set a variable for specifying the column of interest
+  Dim column As Integer
+  column = 1
+
+'A variable to determine the row our information will be put in
+  Dim ticker_count As Integer
+  ticker_count = 1
+
+'this  variable will hold the cell that is the first of a ticker
+  Dim Start As Long
+  Start = 2
+
+  Dim Volume As Single
+  Volume = 0
+
+  ' Loop through rows in the column
+  For i = 2 To 100000000
+    
+    'Checks if the current cell is empty and stops  the loop if it is
+    If IsEmpty(Cells(i, 1)) = True Then
+        Exit For
+    End If
+    
+    
+    
+    ' Searches for when the value of the next cell is different than that of the current cell
+    If Cells(i + 1, column).Value <> Cells(i, column).Value Then
+      ticker_count = ticker_count + 1
+
+      Cells(ticker_count, 10).Value = Cells(i, 1).Value
+
+      'Calcutlates  the change  and percent change givesundefined for percent  it it  started at  0 value
+      Cells(ticker_count, 11).Value = Cells(i, 6).Value - Cells(Start, 3).Value
+        If Cells(Start, 3).Value = 0 Then
+                Cells(ticker_count, 12).Value = "Undefined"
+        ElseIf Cells(Start, 3).Value <> 0 Then
+            Cells(ticker_count, 12).Value = 100 * Cells(ticker_count, 11).Value / Cells(Start, 3).Value
+      End If
+      'Calcutlates Volume
+      Volume = 0
+      For x = Start To i
+        Volume = Cells(x, 7).Value + Volume
+      Next x
+      Cells(ticker_count, 13).Value = Volume
+    
+    'Sets start to the first value of next ticker
+    Start = i + 1
+    
+    End If
+
+  Next i
+'For  loop  to select color based on if thestock value increased or decreased
+  For y = 2 To 100000
+  'checks if the current cell is empty stops if if it
+    If IsEmpty(Cells(i, 10)) = False Then
+        Exit For
+    'Sets color
+    ElseIf Cells(y, 11).Value > 0 Then
+      Cells(y, 11).Interior.ColorIndex = 4
+    ElseIf Cells(y, 11).Value < 0 Then
+      Cells(y, 11).Interior.ColorIndex = 3
+    End If
+    Next y
+
+End Sub
